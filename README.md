@@ -15,8 +15,8 @@
 ```xml
 
 <dependency>
-    <groupId>com.github.zohar-soul</groupId>
-    <artifactId>quarkus-jsonrpc4j</artifactId>
+    <groupId>com.github.zohar-soul.quarkus-jsonrpc4j</groupId>
+    <artifactId>quarkus-jsonrpc</artifactId>
     <version>v0.1</version>
 </dependency>
 
