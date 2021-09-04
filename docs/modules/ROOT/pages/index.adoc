@@ -11,7 +11,7 @@ In your `pom.xml` file, add:
 [source,xml]
 ----
 <dependency>
-    <groupId>io.quarkiverse.jsonrpc</groupId>
+    <groupId>com.github.zohar-soul.quarkus-jsonrpc4j</groupId>
     <artifactId>quarkus-jsonrpc</artifactId>
 </dependency>
 ----
