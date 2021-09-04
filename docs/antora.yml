@@ -1,0 +1,5 @@
+name: quarkus-jsonrpc
+title: Quarkus - Jsonrpc
+version: dev
+nav:
+  - modules/ROOT/nav.adoc
