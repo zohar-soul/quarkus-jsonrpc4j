@@ -1,7 +1,12 @@
 package io.quarkiverse.jsonrpc.runtime;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +20,16 @@ import io.quarkus.runtime.annotations.Recorder;
 public class JsonRpcRecorder {
     private static final Logger LOG = LoggerFactory.getLogger(JsonRpcRecorder.class);
 
-    public Supplier<Object> jsonRpcSupplier(String dotName, String baseUrl, String serviceUrl) {
+    public Supplier<Object> jsonRpcSupplier(String dotName, String prefix, JsonRpcConfig jsonRpcConfig, String serviceUrl) {
+        Map<String, JsonRpcConfig.Config> configsMap = jsonRpcConfig.configs;
+        LOG.info("addJsonRpcServices, start configs");
+        if (configsMap == null || configsMap.size() == 0) {
+            configsMap = new HashMap<>();
+        }
+        LOG.info("addJsonRpcServices, configs={}", configsMap.size());
+        List<JsonRpcConfig.Config> configs = new ArrayList<>(configsMap.values());
+        Map<String, String> configMap = configs.stream().collect(Collectors.toMap(t -> t.scanPackage, t -> t.baseUrl));
+        String baseUrl = configMap.get(prefix);
         return () -> {
             try {
                 LOG.info("start new JsonRpcHttpClient = {}, baseUrl = {}, serviceUrl = {} ", dotName, baseUrl, serviceUrl);

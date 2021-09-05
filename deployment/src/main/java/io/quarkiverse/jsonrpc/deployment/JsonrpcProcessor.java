@@ -1,9 +1,6 @@
 package io.quarkiverse.jsonrpc.deployment;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import javax.inject.Singleton;
 
@@ -54,28 +51,22 @@ class JsonrpcProcessor {
         }
     }
 
-    @Record(ExecutionTime.STATIC_INIT)
+    @Record(ExecutionTime.RUNTIME_INIT)
     @BuildStep
     void addJsonRpcServices(BuildProducer<SyntheticBeanBuildItem> syntheticBeanBuildItemBuildProducer,
             List<RpcServiceItem> rpcServiceItems,
             JsonRpcConfig jsonRpcConfig,
             JsonRpcRecorder jsonRpcRecorder) {
         LOG.infof("addJsonRpcServices, rpcServiceItems=%s", rpcServiceItems.size());
-        List<JsonRpcConfig.Config> configs = new ArrayList<>(jsonRpcConfig.configs.values());
-        //        LOG.info("configs = {}", configs);
-        if (configs == null || configs.size() == 0) {
-            return;
-        }
-        Map<String, String> configMap = configs.stream().collect(Collectors.toMap(t -> t.scanPackage, t -> t.baseUrl));
         for (RpcServiceItem rpcServiceItem : rpcServiceItems) {
             DotName dotName = rpcServiceItem.getServiceName();
-            String baseUrl = configMap.get(dotName.prefix().toString());
             SyntheticBeanBuildItem.ExtendedBeanConfigurator configurator = SyntheticBeanBuildItem
                     .configure(dotName)
                     .scope(Singleton.class)
                     .unremovable()
-                    //                    .setRuntimeInit()
-                    .supplier(jsonRpcRecorder.jsonRpcSupplier(dotName.toString(), baseUrl, rpcServiceItem.getServiceUrl()));
+                    .setRuntimeInit()
+                    .supplier(jsonRpcRecorder.jsonRpcSupplier(dotName.toString(), dotName.prefix().toString(), jsonRpcConfig,
+                            rpcServiceItem.getServiceUrl()));
             syntheticBeanBuildItemBuildProducer.produce(configurator.done());
         }
 

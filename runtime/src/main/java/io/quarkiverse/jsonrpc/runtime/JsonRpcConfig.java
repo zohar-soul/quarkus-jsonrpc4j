@@ -4,7 +4,7 @@ import java.util.Map;
 
 import io.quarkus.runtime.annotations.*;
 
-@ConfigRoot(name = "json-rpc", phase = ConfigPhase.BUILD_AND_RUN_TIME_FIXED)
+@ConfigRoot(name = "json-rpc", phase = ConfigPhase.BOOTSTRAP)
 public class JsonRpcConfig {
     /**
      * config list
